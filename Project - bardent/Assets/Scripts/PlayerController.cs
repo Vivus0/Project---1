@@ -23,7 +23,12 @@ public class PlayerController : MonoBehaviour
     public float jumpForce = 16.0f;
     public float groundCheckRadius;
 
+
     public Transform groundCheck;
+
+    public Animator introAnimator;  // Ссылка на аниматор вступительной анимации
+    private bool isIntroPlaying = true;  // Флаг, указывающий, воспроизводится ли вступительная анимация
+
 
     public LayerMask whatIsGround;
 
@@ -38,11 +43,31 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isIntroPlaying)  // Проверка, не воспроизводится ли вступительная анимация
+        {
+            return;  // Если вступительная анимация воспроизводится, пропускаем остальной код
+        }
+
         CheckInput();
         CheckMovementDirection();
         UpdateAnimations();
         CheckIfCanJump();
     }
+
+    public void DisablePlayerControl()
+    {
+        isIntroPlaying = true;
+        rb.velocity = Vector2.zero;
+        movementInputDirection = 0;
+        rb.bodyType = RigidbodyType2D.Static;  // Отключение физики
+    }
+
+    public void EnablePlayerControl()
+    {
+        isIntroPlaying = false;
+        rb.bodyType = RigidbodyType2D.Dynamic;  // Включение физики
+    }
+
 
     private void CheckSurroundings()
     {
